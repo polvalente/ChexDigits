@@ -1,18 +1,12 @@
 defmodule DigitValidator.Rules do
-  import DigitValidator.Helper
-  import Enum, only: [to_list: 1]
+  alias __MODULE__
 
-  def gen_vd(digits, :cpf) do
-    first_vd =
-      digits
-      |> Enum.take(9)
-      |> checksum(11, to_list(10..2), %{10 => 0})
+  def verifier_digit(digits, type) do
+    type =
+      type
+      |> Atom.to_string()
+      |> Macro.camelize()
 
-    second_vd =
-      [digits | first_vd]
-      |> checksum(11, to_list(11..2), %{10 => 0})
-
-    [first_vd, second_vd]
+    Elixir.Module.concat(Rules, type).verifier_digit(digits)
   end
-
 end
