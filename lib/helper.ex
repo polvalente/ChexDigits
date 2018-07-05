@@ -1,20 +1,18 @@
-defmodule DigitValidator do
-  @moduledoc """
-  Documentation for DigitValidator.
-  """
+defmodule DigitValidator.Helper do
+  def checksum(digits, m, weights \\ 1, replacements \\ %{}) do
+    digits
+    |> dot(weights)
+    |> Enum.sum()
+    |> mod(m, replacements)
+  end
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> DigitValidator.hello
-      :world
-
-  """
-  @spec validate(String.t()) :: List.t()
-  def validate(digits) do
-
+  def mod(digit, m, replacements \\ %{}) do
+    case Map.get(replacements, digit) do
+      nil ->
+        m - rem(digit, m)
+      val ->
+        val
+    end
   end
 
   def dot(u, v) when is_list(u) and is_list(v) do
