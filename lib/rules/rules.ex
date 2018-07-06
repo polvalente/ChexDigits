@@ -9,6 +9,7 @@ defmodule ChexDigits.Rules do
         :credit_card -> Rules.CreditCard
         :banco_do_brasil -> Rules.BankAccounts.BancoDoBrasil
         :banrisul -> Rules.BankAccounts.Banrisul
+        :citibank -> Rules.BankAccounts.Citibank
         :hsbc -> Rules.BankAccounts.HSBC
         :real -> Rules.BankAccounts.Real
         :santander -> Rules.BankAccounts.Santander
