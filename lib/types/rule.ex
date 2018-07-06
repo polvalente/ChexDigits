@@ -39,7 +39,7 @@ defmodule ChexDigits.Types.Rule do
   """
 
   import Exchema.Notation
-  import ChexDigits.Helper, only: [to_list: 2]
+  alias ChexDigits.Helper, as: H
   alias Exchema.Types, as: EXT
   alias ChexDigits.Types, as: CDT
 
@@ -63,8 +63,7 @@ defmodule ChexDigits.Types.Rule do
           integer
         ) :: %__MODULE__{}
   def new(
-        account,
-        agency,
+        digits,
         length,
         padding,
         module,
@@ -72,12 +71,10 @@ defmodule ChexDigits.Types.Rule do
         replacements \\ %{before: %{}, after: %{}},
         weighted_sum_module \\ nil
       ) do
-    with digits <- to_list(digits),
-         agency <- to_list(agency),
-         weights <- to_list(weights) do
+    with digits <- H.to_list(digits),
+         weights <- H.to_list(weights) do
       rule = %__MODULE__{
-        agency: agency,
-        account: account,
+        digits: digits,
         length: length,
         padding: padding,
         module: module,
@@ -92,14 +89,4 @@ defmodule ChexDigits.Types.Rule do
       end
     end
   end
-
-  defp to_list(l) when is_binary(l) do
-    l
-    |> String.split("", trim: true)
-    |> Enum.filter(fn digit -> Regex.match?(~r/[0-9]/, digit) end)
-    |> Enum.map(&String.to_integer/1)
-  end
-
-  defp to_list(l) when is_list(l), do: l
-  defp to_list(value), do: {:error, {:invalid_value, value}}
 end
