@@ -13,6 +13,7 @@ defmodule ChexDigits.Rules do
         :caixa -> Rules.BankAccounts.CaixaEconomica
         :citibank -> Rules.BankAccounts.Citibank
         :hsbc -> Rules.BankAccounts.HSBC
+        :itau -> Rules.BankAccounts.Itau
         :real -> Rules.BankAccounts.Real
         :santander -> Rules.BankAccounts.Santander
       end
