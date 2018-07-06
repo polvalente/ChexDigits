@@ -1,4 +1,4 @@
-defmodule CheckDigit.MixProject do
+defmodule ChexDigits.MixProject do
   use Mix.Project
 
   def project do

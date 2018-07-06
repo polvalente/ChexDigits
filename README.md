@@ -1,4 +1,4 @@
-# CheckDigit
+# ChexDigits
 
 **TODO: Add description**
 

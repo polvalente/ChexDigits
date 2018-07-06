@@ -1,5 +1,5 @@
-defmodule CheckDigit.Rules.CreditCard do
-  import CheckDigit.Helper
+defmodule ChexDigits.Rules.CreditCard do
+  import ChexDigits.Helper
   import Enum, only: [to_list: 1]
 
   def check_digit(digits) do

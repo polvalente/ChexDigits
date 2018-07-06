@@ -1,5 +1,5 @@
-defmodule CheckDigit.Rules.BankAccounts.BancoDoBrasil do
-  import CheckDigit.Helper
+defmodule ChexDigits.Rules.BankAccounts.BancoDoBrasil do
+  import ChexDigits.Helper
   import Enum, only: [to_list: 1]
 
   def check_digit(digits) do

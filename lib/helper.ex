@@ -1,4 +1,4 @@
-defmodule CheckDigit.Helper do
+defmodule ChexDigits.Helper do
   @moduledoc """
   This module contains all helper functions to specify the algorithms for checking digit calculation.
 

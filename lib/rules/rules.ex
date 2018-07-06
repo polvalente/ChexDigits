@@ -1,4 +1,4 @@
-defmodule CheckDigit.Rules do
+defmodule ChexDigits.Rules do
   alias __MODULE__
 
   def verifier_digit(digits, type) do

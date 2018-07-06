@@ -1,4 +1,4 @@
-defmodule CheckDigitTest do
+defmodule ChexDigitsTest do
   use ExUnit.Case
-  doctest CheckDigit
+  doctest ChexDigits
 end
