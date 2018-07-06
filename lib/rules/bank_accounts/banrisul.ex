@@ -1,5 +1,7 @@
 defmodule ChexDigits.Rules.BankAccounts.Banrisul do
   @moduledoc false
+  alias ChexDigits.Types.Rule
+
   import ChexDigits.Helper, only: [replacements: 2, checksum: 1]
   import Enum, only: [to_list: 1]
 

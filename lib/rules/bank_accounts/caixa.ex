@@ -1,15 +1,19 @@
 defmodule ChexDigits.Rules.BankAccounts.CaixaEconomica do
   @moduledoc false
-  import ChexDigits.Helper
+  alias ChexDigits.Types.Rule
+  alias ChexDigits.Helper, as: H
   import Enum, only: [to_list: 1]
 
-  def check_digit(digits) do
-    digits
-    |> pad(15, :left)
-    |> checksum(
+  def rule(account, agency) do
+    Rule.new(
+      H.to_list(agency) ++ H.to_list(account),
+      15,
+      :left,
       -11,
       to_list(8..2) ++ to_list(9..2),
-      replacements(%{}, %{10 => 0})
+      H.replacements(%{}, %{10 => 0})
     )
   end
+
+  def execute(rule), do: H.checksum(rule)
 end

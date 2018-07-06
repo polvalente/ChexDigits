@@ -1,12 +1,19 @@
 defmodule ChexDigits.Rules.BankAccounts.BancoDoBrasil do
   @moduledoc false
-  import ChexDigits.Helper, only: [replacements: 2, checksum: 1]
-  import Enum, only: [to_list: 1]
   alias ChexDigits.Types.Rule
+  alias ChexDigits.Helper, as: H
+  import Enum, only: [to_list: 1]
 
-  def rule(account, agency \\ nil) do
-    Rule.new(account, 8, :left, -11, to_list(9..2), replacements(%{}, %{10 => "X", 11 => 0}))
+  def rule(account, _agency) do
+    Rule.new(
+      account,
+      8,
+      :left,
+      -11,
+      to_list(9..2),
+      H.replacements(%{}, %{10 => "X", 11 => 0})
+    )
   end
 
-  def execute(rule), do: checksum(rule)
+  def execute(rule), do: H.checksum(rule)
 end

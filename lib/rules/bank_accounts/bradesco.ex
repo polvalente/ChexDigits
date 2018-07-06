@@ -1,9 +1,10 @@
 defmodule ChexDigits.Rules.BankAccounts.Bradesco do
   @moduledoc false
+  alias ChexDigits.Types.Rule
   import ChexDigits.Helper, only: [replacements: 2, checksum: 1]
   import Enum, only: [to_list: 1]
 
-  def rule(account, _agency \\ nil) do
+  def rule(account, _agency) do
     Rule.new(
       account,
       8,

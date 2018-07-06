@@ -1,19 +1,38 @@
 defmodule ChexDigits.Rules.CPF do
   @moduledoc false
-  import ChexDigits.Helper
+  alias ChexDigits.Types.Rule
+  alias ChexDigits.Helper, as: H
   import Enum, only: [to_list: 1]
 
-  def check_digit(digits) do
-    digits = Enum.take(digits, 9)
-
-    first_vd =
+  def check_digits(digits) do
+    digits =
       digits
-      |> checksum(-11, to_list(10..2), %{1 => 0})
+      |> H.to_list()
+      |> Enum.take(9)
 
-    second_vd =
-      (digits ++ [first_vd])
-      |> checksum(-11, to_list(11..2), %{1 => 0})
+    first_cd =
+      digits
+      |> rule()
+      |> execute()
 
-    [first_vd, second_vd]
+    second_cd =
+      (digits ++ [first_cd])
+      |> rule()
+      |> execute()
+
+    [first_cd, second_cd]
   end
+
+  def rule(digits) do
+    Rule.new(
+      digits,
+      10,
+      :left,
+      -11,
+      to_list(11..2),
+      H.replacements(%{1 => 0, 0 => 0}, %{})
+    )
+  end
+
+  def execute(rule), do: H.checksum(rule)
 end
