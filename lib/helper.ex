@@ -20,7 +20,7 @@ defmodule CheckDigit.Helper do
     An optional argument to perform a weighted sum on the digits
 
   `replacements`:
-    An optional argument to specify a translation table (e.g. if the final result is 5, replace with "X")
+    An optional argument to specify a translation table (e.g. if the final result is 5, replace with "X").
     Example: %{0 => "X", 4 => "Y"}
 
   `weighted_sum_module`:
@@ -34,11 +34,11 @@ defmodule CheckDigit.Helper do
   end
 
   def mod(digit, module, replacements \\ %{}) do
-    r = my_rem(digit, module)
+    r = my_rem(digit, abs(module))
 
     case Map.get(replacements, r)do
       nil ->
-        r
+        my_rem(digit, module)
       val ->
         val
     end
