@@ -1,9 +1,9 @@
-defmodule DigitValidator.MixProject do
+defmodule CheckDigit.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :digit_validator,
+      app: :check_digit,
       version: "0.1.0",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,

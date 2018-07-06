@@ -1,8 +1,8 @@
-defmodule DigitValidator.Rules.Agency do
-  import DigitValidator.Helper
+defmodule CheckDigit.Rules.BankAgency do
+  import CheckDigit.Helper
   import Enum, only: [to_list: 1]
 
-  def verifier_digit(digits) do
+  def check_digit(digits) do
     digits
     |> checksum(
       -11,

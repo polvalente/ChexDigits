@@ -1,8 +1,8 @@
-defmodule DigitValidator.Rules.Cnpj do
-  import DigitValidator.Helper
+defmodule CheckDigit.Rules.CNPJ do
+  import CheckDigit.Helper
   import Enum, only: [to_list: 1]
 
-  def verifier_digit(digits) do
+  def check_digit(digits) do
     gen_vd(digits, :cnpj_last)
   end
 

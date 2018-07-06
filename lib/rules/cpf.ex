@@ -1,8 +1,8 @@
-defmodule DigitValidator.Rules.Cpf do
-  import DigitValidator.Helper
+defmodule CheckDigit.Rules.CPF do
+  import CheckDigit.Helper
   import Enum, only: [to_list: 1]
 
-  def verifier_digit(digits) do
+  def check_digit(digits) do
     digits = Enum.take(digits, 9)
 
     first_vd =

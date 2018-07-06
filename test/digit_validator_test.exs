@@ -1,8 +1,4 @@
-defmodule DigitValidatorTest do
+defmodule CheckDigitTest do
   use ExUnit.Case
-  doctest DigitValidator
-
-  test "greets the world" do
-    assert DigitValidator.hello() == :world
-  end
+  doctest CheckDigit
 end
