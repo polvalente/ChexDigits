@@ -7,7 +7,7 @@ defmodule CheckDigit.Rules do
         :cnpj -> Rules.CNPJ
         :cpf -> Rules.CPF
         :credit_card -> Rules.CreditCard
-        :bank_agency -> Rules.BankAgency
+        :banco_do_brasil -> Rules.BankAccounts.BancoDoBrasil
       end
 
     module.check_digit(digits)

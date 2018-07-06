@@ -3,10 +3,10 @@ defmodule CheckDigit.Rules.CNPJ do
   import Enum, only: [to_list: 1]
 
   def check_digit(digits) do
-    gen_vd(digits, :cnpj_last)
+    gen_check_digit(digits, :cnpj_last)
   end
 
-  def gen_vd(digits, :cnpj_last) do
+  def gen_check_digit(digits, :cnpj_last) do
     first_vd =
       digits
       |> Enum.take(13)
@@ -19,7 +19,7 @@ defmodule CheckDigit.Rules.CNPJ do
       [first_vd, second_vd]
   end
 
-  def gen_vd(digits, :cnpj_eighth) do
+  def gen_check_digit(digits, :cnpj_eighth) do
     digits
     |> Enum.take(7)
     |> checksum(10, two_one(7), %{10 => 0}, 9)

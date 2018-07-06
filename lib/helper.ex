@@ -21,7 +21,16 @@ defmodule CheckDigit.Helper do
 
   `replacements`:
     An optional argument to specify a translation table (e.g. if the final result is 5, replace with "X").
-    Example: %{0 => "X", 4 => "Y"}
+    There should be a "before" and an "after" fields, each of which
+    specify when the replacement will be applied -- before or after the `module - rem(digit, module)` calculation
+
+    The `Helper.replacements/2` function build this map from two separate maps, for ease of use
+
+    Example:
+    %{
+      "before" => %{0 => "X"},
+      "after" => %{4 => "Y"}
+    }
 
   `weighted_sum_module`:
     An optional argument that specifies if each step of the weighted sum will suffer a remainder operation. Behaves the same as `module`
@@ -33,14 +42,30 @@ defmodule CheckDigit.Helper do
     |> mod(module, replacements)
   end
 
-  def mod(digit, module, replacements \\ %{}) do
+  def replacements(before_replacements \\ %{}, after_replacements \\ %{}) do
+    %{
+      "after" => after_replacements,
+      "before" => before_replacements
+    }
+  end
+
+  def mod(digit, module, %{"after" => after_replacements, "before" => before_replacements}) do
     r = my_rem(digit, abs(module))
 
-    case Map.get(replacements, r)do
+    case Map.get(before_replacements, r) do
       nil ->
-        my_rem(digit, module)
+        replace(my_rem(digit, module), after_replacements)
       val ->
         val
+    end
+  end
+
+  def replace(value, replacements) do
+    case Map.get(replacements, value) do
+      nil ->
+        value
+      replaced ->
+        replaced
     end
   end
 
@@ -66,11 +91,11 @@ defmodule CheckDigit.Helper do
     |> Enum.map(&(rem(&1, 2) + 1))
   end
 
-  defp my_rem(n, nil), do: n
-  defp my_rem(n, module) when module < 0 do
+  def my_rem(n, nil), do: n
+  def my_rem(n, module) when module < 0 do
     -module - rem(n, module)
   end
-  defp my_rem(n, module) do
+  def my_rem(n, module) do
     rem(n, module)
   end
 
@@ -94,4 +119,11 @@ defmodule CheckDigit.Helper do
 
   def sub(u, v) when is_number(v) and is_list(u),
     do: Enum.map(u, &(v - &1))
+
+  def pad(digits, max_len, :right) when length(digits) < max_len, do: pad([0] ++ digits, max_len, :right)
+  def pad(digits, max_len, :right) when length(digits) == max_len, do: digits
+  def pad(_digits, max_len, :right), do: raise(ArgumentError, message: "Needs at most #{max_len} digits")
+  def pad(digits, max_len, :left) when length(digits) < max_len, do: pad([0] ++ digits, max_len, :left)
+  def pad(digits, max_len, :left) when length(digits) == max_len, do: digits
+  def pad(_digits, max_len, :left), do: raise(ArgumentError, message: "Needs at most #{max_len} digits")
 end
