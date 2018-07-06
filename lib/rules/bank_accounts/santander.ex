@@ -1,4 +1,5 @@
 defmodule ChexDigits.Rules.BankAccounts.Santander do
+  @moduledoc false
   import ChexDigits.Helper
   import Enum, only: [to_list: 1]
 
@@ -7,7 +8,7 @@ defmodule ChexDigits.Rules.BankAccounts.Santander do
     |> pad(14, :left)
     |> checksum(
       -10,
-      [9,7,3,1,0,0,9,7,1,3,1,9,7,3],
+      [9, 7, 3, 1, 0, 0, 9, 7, 1, 3, 1, 9, 7, 3],
       replacements(%{0 => 0}, %{})
     )
     |> List.wrap()

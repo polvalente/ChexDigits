@@ -1,4 +1,5 @@
 defmodule ChexDigits.Rules.CNPJ do
+  @moduledoc false
   import ChexDigits.Helper
   import Enum, only: [to_list: 1]
 
@@ -12,11 +13,11 @@ defmodule ChexDigits.Rules.CNPJ do
       |> Enum.take(13)
       |> checksum(11, to_list(6..9) ++ to_list(2..9), %{10 => 0})
 
-      second_vd =
-      digits ++ [first_vd]
+    second_vd =
+      (digits ++ [first_vd])
       |> checksum(11, to_list(5..9) ++ to_list(2..9), %{10 => 0})
 
-      [first_vd, second_vd]
+    [first_vd, second_vd]
   end
 
   def gen_check_digit(digits, :cnpj_eighth) do

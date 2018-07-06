@@ -50,12 +50,14 @@ defmodule ChexDigits.Helper do
   end
 
   def mod(digit, nil, _), do: digit
+
   def mod(digit, module, %{"after" => after_replacements, "before" => before_replacements}) do
     r = my_rem(digit, abs(module))
 
     case Map.get(before_replacements, r) do
       nil ->
         replace(my_rem(digit, module), after_replacements)
+
       val ->
         val
     end
@@ -65,6 +67,7 @@ defmodule ChexDigits.Helper do
     case Map.get(replacements, value) do
       nil ->
         value
+
       replaced ->
         replaced
     end
@@ -73,19 +76,14 @@ defmodule ChexDigits.Helper do
   def dot(u, v, module) when is_list(u) and is_list(v) do
     [u, v]
     |> List.zip()
-    |> Enum.reduce(
-      0,
-      fn({a, b}, acc) ->
-        acc + my_rem(a*b, module)
-      end
-    )
+    |> Enum.reduce(0, fn {a, b}, acc ->
+      acc + my_rem(a * b, module)
+    end)
   end
 
-  def dot(u, v, module) when is_number(u) and is_list(v),
-    do: Enum.map(v, &(my_rem(&1 * u, module)))
+  def dot(u, v, module) when is_number(u) and is_list(v), do: Enum.map(v, &my_rem(&1 * u, module))
 
-  def dot(u, v, module) when is_number(v) and is_list(u),
-    do: Enum.map(u, &(my_rem(&1 * v, module)))
+  def dot(u, v, module) when is_number(v) and is_list(u), do: Enum.map(u, &my_rem(&1 * v, module))
 
   def two_one(length) do
     1..length
@@ -93,9 +91,11 @@ defmodule ChexDigits.Helper do
   end
 
   def my_rem(n, nil), do: n
+
   def my_rem(n, module) when module < 0 do
     -module - rem(n, module)
   end
+
   def my_rem(n, module) do
     rem(n, module)
   end
@@ -104,6 +104,7 @@ defmodule ChexDigits.Helper do
     case rem(vd, n) do
       0 ->
         0
+
       _ ->
         (div(vd, n) + 1) * n - vd
     end
@@ -115,16 +116,23 @@ defmodule ChexDigits.Helper do
     |> Enum.map(fn {a, b} -> a - b end)
   end
 
-  def sub(u, v) when is_number(u) and is_list(v),
-    do: Enum.map(v, &(u - &1))
+  def sub(u, v) when is_number(u) and is_list(v), do: Enum.map(v, &(u - &1))
 
-  def sub(u, v) when is_number(v) and is_list(u),
-    do: Enum.map(u, &(v - &1))
+  def sub(u, v) when is_number(v) and is_list(u), do: Enum.map(u, &(v - &1))
 
-  def pad(digits, max_len, :right) when length(digits) < max_len, do: pad([0] ++ digits, max_len, :right)
+  def pad(digits, max_len, :right) when length(digits) < max_len,
+    do: pad([0] ++ digits, max_len, :right)
+
   def pad(digits, max_len, :right) when length(digits) == max_len, do: digits
-  def pad(_digits, max_len, :right), do: raise(ArgumentError, message: "Needs at most #{max_len} digits")
-  def pad(digits, max_len, :left) when length(digits) < max_len, do: pad([0] ++ digits, max_len, :left)
+
+  def pad(_digits, max_len, :right),
+    do: raise(ArgumentError, message: "Needs at most #{max_len} digits")
+
+  def pad(digits, max_len, :left) when length(digits) < max_len,
+    do: pad([0] ++ digits, max_len, :left)
+
   def pad(digits, max_len, :left) when length(digits) == max_len, do: digits
-  def pad(_digits, max_len, :left), do: raise(ArgumentError, message: "Needs at most #{max_len} digits")
+
+  def pad(_digits, max_len, :left),
+    do: raise(ArgumentError, message: "Needs at most #{max_len} digits")
 end

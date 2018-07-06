@@ -1,4 +1,5 @@
 defmodule ChexDigits.Rules.CreditCard do
+  @moduledoc false
   import ChexDigits.Helper
   import Enum, only: [to_list: 1]
 

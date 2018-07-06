@@ -1,4 +1,5 @@
 defmodule ChexDigits.Rules.BankAccounts.Itau do
+  @moduledoc false
   import ChexDigits.Helper
   import Enum, only: [to_list: 1]
 
