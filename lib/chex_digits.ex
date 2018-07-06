@@ -5,6 +5,6 @@ defmodule ChexDigits do
     |> String.split("", trim: true)
     |> Enum.filter(fn digit -> Regex.match?(~r/[0-9]/, digit) end)
     |> Enum.map(&String.to_integer/1)
-    |> ChexDigits.Rules.verifier_digit(type)
+    |> ChexDigits.Rules.check_digit(type)
   end
 end

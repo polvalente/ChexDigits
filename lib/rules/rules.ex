@@ -9,6 +9,7 @@ defmodule ChexDigits.Rules do
         :credit_card -> Rules.CreditCard
         :banco_do_brasil -> Rules.BankAccounts.BancoDoBrasil
         :banrisul -> Rules.BankAccounts.Banrisul
+        :santander -> Rules.BankAccounts.Santander
       end
 
     module.check_digit(digits)
