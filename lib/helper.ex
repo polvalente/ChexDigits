@@ -49,6 +49,7 @@ defmodule ChexDigits.Helper do
     }
   end
 
+  def mod(digit, nil, _), do: digit
   def mod(digit, module, %{"after" => after_replacements, "before" => before_replacements}) do
     r = my_rem(digit, abs(module))
 
