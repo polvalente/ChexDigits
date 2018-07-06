@@ -1,6 +1,6 @@
 defmodule ChexDigits.Rules.BankAccounts.Banrisul do
   @moduledoc false
-  import ChexDigits.Helper
+  import ChexDigits.Helper, only: [to_list: 1]
   import Enum, only: [to_list: 1]
 
   def check_digit(digits) do
@@ -12,5 +12,9 @@ defmodule ChexDigits.Rules.BankAccounts.Banrisul do
       replacements(%{0 => 0, 1 => 6}, %{10 => 0})
     )
     |> List.wrap()
+  end
+
+  def rule(account, agency) do
+    Rule.new(to_list(agency) ++ to_list(account))
   end
 end

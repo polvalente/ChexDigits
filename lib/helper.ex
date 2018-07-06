@@ -35,23 +35,61 @@ defmodule ChexDigits.Helper do
   `weighted_sum_module`:
     An optional argument that specifies if each step of the weighted sum will suffer a remainder operation. Behaves the same as `module`
   """
+
+  @spec checksum(%ChexDigits.Types.Rule{}) :: any()
+  def checksum(%{
+        digits: digits,
+        module: module,
+        weights: weights,
+        replacements: replacements,
+        weighted_sum_module: weighted_sum_module,
+        padding: padding,
+        length: length
+      }),
+      do:
+        checksum(
+          digits,
+          module,
+          padding,
+          length,
+          weights,
+          replacements,
+          weighted_sum_module
+        )
+
   @spec checksum(List.t(), integer | nil, List.t(), Map.t(), integer | nil) :: any()
-  def checksum(digits, module, weights \\ 1, replacements \\ %{}, weighted_sum_module \\ nil) do
+  def checksum(
+        digits,
+        module,
+        padding,
+        length,
+        weights \\ 1,
+        replacements \\ %{},
+        weighted_sum_module \\ nil
+      ) do
     digits
+    |> pad(length, padding)
     |> dot(weights, weighted_sum_module)
     |> mod(module, replacements)
   end
 
   def replacements(before_replacements \\ %{}, after_replacements \\ %{}) do
-    %{
-      "after" => after_replacements,
-      "before" => before_replacements
+    alias ChexDigits.Types.Replacements
+
+    reps = %Replacements{
+      after: after_replacements,
+      before: before_replacements
     }
+
+    case Exchema.errors(reps, Replacements) do
+      [] -> reps
+      errors -> raise Exchema.flatten_errors(errors)
+    end
   end
 
   def mod(digit, nil, _), do: digit
 
-  def mod(digit, module, %{"after" => after_replacements, "before" => before_replacements}) do
+  def mod(digit, module, %{after: after_replacements, before: before_replacements}) do
     r = my_rem(digit, abs(module))
 
     case Map.get(before_replacements, r) do
@@ -135,4 +173,14 @@ defmodule ChexDigits.Helper do
 
   def pad(_digits, max_len, :left),
     do: raise(ArgumentError, message: "Needs at most #{max_len} digits")
+
+  def to_list(l) when is_binary(l) do
+    l
+    |> String.split("", trim: true)
+    |> Enum.filter(fn digit -> Regex.match?(~r/[0-9]/, digit) end)
+    |> Enum.map(&String.to_integer/1)
+  end
+
+  def to_list(l) when is_list(l), do: l
+  def to_list(value), do: {:error, {:invalid_value, value}}
 end
