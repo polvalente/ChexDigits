@@ -158,6 +158,8 @@ defmodule ChexDigits.Helper do
 
   def sub(u, v) when is_number(v) and is_list(u), do: Enum.map(u, &(v - &1))
 
+  def pad(digits, nil, _), do: digits
+
   def pad(digits, max_len, :right) when length(digits) < max_len,
     do: pad([0] ++ digits, max_len, :right)
 
