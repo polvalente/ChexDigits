@@ -81,8 +81,8 @@ defmodule ChexDigits.Helper do
       before: before_replacements
     }
 
-    case Exchema.errors(reps, Replacements) do
-      [] -> reps
+    case Replacements.validate(reps) do
+      :ok -> reps
       errors -> raise Exchema.flatten_errors(errors)
     end
   end

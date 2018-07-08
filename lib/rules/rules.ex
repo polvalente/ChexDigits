@@ -20,5 +20,7 @@ defmodule ChexDigits.Rules do
   def check_digit(digits, :real), do: do_check_digit(digits, Rules.BankAccounts.Real)
   def check_digit(digits, :santander), do: do_check_digit(digits, Rules.BankAccounts.Santander)
 
+  defp do_check_digit(digits, Rules.CNPJ = module), do: module.check_digits(digits)
+  defp do_check_digit(digits, Rules.CPF = module), do: module.check_digits(digits)
   defp do_check_digit(digits, module), do: module.check_digit(digits)
 end
