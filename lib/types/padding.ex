@@ -1,19 +1,22 @@
 defmodule ChexDigits.Types.Padding do
   @moduledoc """
-  Exchema type to represent padding direction
+  Custom type to represent padding direction
   """
-  import Exchema.Notation
+  use ChexDigits.Types
 
-  subtype(Exchema.Types.Atom, fn atom ->
-    case atom do
-      :left ->
+  default(:left)
+
+  def validate(value), do: validate(value, [])
+
+  def validate(value, _opts) do
+    valid_padding = [:left, :right]
+
+    case Enum.member?(valid_padding, value) do
+      true ->
         :ok
 
-      :right ->
-        :ok
-
-      _ ->
+      false ->
         {:error, :invalid_padding}
     end
-  end)
+  end
 end

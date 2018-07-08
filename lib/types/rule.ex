@@ -38,27 +38,44 @@ defmodule ChexDigits.Types.Rule do
     An optional argument that specifies if each step of the weighted sum will suffer a remainder operation. Behaves the same as `module`
   """
 
-  import Exchema.Notation
+  use ChexDigits.Types
+
   alias ChexDigits.Helper, as: H
-  alias Exchema.Types, as: EXT
   alias ChexDigits.Types, as: CDT
 
-  structure(
-    length: EXT.Integer.NonNegative,
+  defstruct(
+    # non_neg_integer
+    length: CDT.Integer.NonNegative,
     padding: CDT.Padding,
-    digits: EXT.List,
-    module: {EXT.Optional, EXT.Integer},
-    weights: EXT.List,
+    # list
+    digits: CDT.List,
+    # integer or nil
+    module: CDT.Integer.Optional,
+    # list
+    weights: CDT.Weights,
     replacements: CDT.Replacements,
-    weighted_sum_module: {EXT.Optional, EXT.Integer}
+    # integer or nil
+    weighted_sum_module: CDT.Integer.Optional
   )
+
+  def default do
+    %__MODULE__{}
+    |> Map.delete(:__struct__)
+    |> Map.keys()
+    |> Enum.reduce([], fn key, acc ->
+      acc ++ [{key, Map.get(%__MODULE__{}, key).default()}]
+    end)
+    |> Enum.reduce(%__MODULE__{}, fn {key, value}, acc ->
+      Map.put(acc, key, value)
+    end)
+  end
 
   @spec new(
           non_neg_integer,
           atom,
           List.t() | String.t(),
           integer,
-          List.t() | String.t(),
+          List.t() | String.t() | number,
           Map.t(),
           integer
         ) :: %__MODULE__{}
@@ -83,10 +100,34 @@ defmodule ChexDigits.Types.Rule do
         weighted_sum_module: weighted_sum_module
       }
 
-      case Exchema.errors(rule, __MODULE__) do
-        [] -> rule
-        errors -> raise Exchema.flatten_errors(errors)
+      case validate(rule) do
+        :ok -> rule
+        errors -> {:error, errors}
       end
     end
+  end
+
+  def validate(rule) do
+    %__MODULE__{}
+    |> Map.delete(:__struct__)
+    |> Map.keys()
+    |> Enum.map(fn key ->
+      {
+        key,
+        Map.get(%__MODULE__{}, key).validate(Map.get(rule, key))
+      }
+    end)
+    |> Enum.filter(&Kernel.match?({field, {:error, reason}}, &1))
+    |> case do
+      [] -> :ok
+      errors -> flatten_errors(errors)
+    end
+  end
+
+  defp flatten_errors(errors) do
+    {
+      :error,
+      Enum.map(errors, fn {field, {:error, err}} -> {field, List.wrap(err)} end)
+    }
   end
 end
