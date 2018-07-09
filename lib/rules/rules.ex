@@ -10,7 +10,6 @@ defmodule ChexDigits.Rules do
     :bradesco,
     :caixa_economica,
     :citibank,
-    :hsbc,
     :itau,
     :real,
     :santander

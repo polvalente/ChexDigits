@@ -11,7 +11,7 @@ defmodule ChexDigits.Rules.BankAccounts.CaixaEconomica do
       :left,
       -11,
       to_list(8..2) ++ to_list(9..2),
-      H.replacements(%{}, %{10 => 0})
+      H.replacements(%{0 => 0}, %{10 => 0})
     )
   end
 
