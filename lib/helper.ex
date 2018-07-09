@@ -163,18 +163,12 @@ defmodule ChexDigits.Helper do
   def pad(digits, max_len, :right) when length(digits) < max_len,
     do: pad([0] ++ digits, max_len, :right)
 
-  def pad(digits, max_len, :right) when length(digits) == max_len, do: digits
-
-  def pad(_digits, max_len, :right),
-    do: raise(ArgumentError, message: "Needs at most #{max_len} digits")
+  def pad(digits, max_len, :right), do: Enum.take(digits, max_len)
 
   def pad(digits, max_len, :left) when length(digits) < max_len,
     do: pad([0] ++ digits, max_len, :left)
 
-  def pad(digits, max_len, :left) when length(digits) == max_len, do: digits
-
-  def pad(_digits, max_len, :left),
-    do: raise(ArgumentError, message: "Needs at most #{max_len} digits")
+  def pad(digits, max_len, :left), do: Enum.take(digits, max_len)
 
   def to_list(l) when is_binary(l) do
     l

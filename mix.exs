@@ -22,8 +22,11 @@ defmodule ChexDigits.MixProject do
   defp deps do
     [
       {:credo, "~> 0.9.1", only: [:dev, :test], runtime: false},
+
+      # TEST DEPS
       {:brcpfcnpj, "~> 0.1.0", only: [:test]},
-      {:stream_data, "~> 0.4.2", only: [:test]}
+      {:stream_data, "~> 0.4.2", only: [:test]},
+      {:poison, "~> 3.1", only: [:dev, :test]}
     ]
   end
 end

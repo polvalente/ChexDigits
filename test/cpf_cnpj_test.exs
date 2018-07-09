@@ -7,15 +7,13 @@ defmodule ChexDigits.CPFCNPJTest do
 
   property "Should always return valid CNPJ" do
     check all cnpj <- generate_cnpj() do
-      [digit1, digit2] = ChexDigits.gen_check_digit(cnpj, :cnpj)
-      assert String.slice(cnpj, -2..-1) == "#{digit1}#{digit2}"
+      assert ChexDigits.check_digit(cnpj, :cnpj)
     end
   end
 
   property "Should always return valid CPF" do
     check all cpf <- generate_cpf() do
-      [digit1, digit2] = ChexDigits.gen_check_digit(cpf, :cpf)
-      assert String.slice(cpf, -2..-1) == "#{digit1}#{digit2}"
+      assert ChexDigits.check_digit(cpf, :cpf)
     end
   end
 end

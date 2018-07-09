@@ -4,21 +4,13 @@ defmodule ChexDigits.Rules.CNPJ do
   alias ChexDigits.Helper, as: H
   import Enum, only: [to_list: 1]
 
-  def check_digits(digits) do
-    digits =
-      digits
-      |> H.to_list()
-      |> Enum.take(12)
-
-    first_cd =
-      digits
-      |> rule()
-      |> execute()
+  def execute(r) do
+    first_cd = H.checksum(r)
 
     second_cd =
-      (digits ++ [first_cd])
-      |> rule()
-      |> execute()
+      (r.digits ++ [first_cd])
+      |> rule(:second)
+      |> H.checksum()
 
     [first_cd, second_cd]
   end
@@ -26,11 +18,22 @@ defmodule ChexDigits.Rules.CNPJ do
   def rule(digits) do
     Rule.new(
       digits,
+      12,
+      :left,
+      -11,
+      to_list(5..2) ++ to_list(9..2),
+      H.replacements(%{1 => 0, 0 => 0}, %{})
+    )
+  end
+
+  def rule(digits, :second) do
+    Rule.new(
+      digits,
       13,
       :left,
-      11,
-      to_list(5..9) ++ to_list(2..9),
-      H.replacements(%{10 => 0}, %{})
+      -11,
+      to_list(6..2) ++ to_list(9..2),
+      H.replacements(%{1 => 0, 0 => 0}, %{})
     )
   end
 
@@ -44,8 +47,6 @@ defmodule ChexDigits.Rules.CNPJ do
       H.replacements(%{10 => 0}, %{})
     )
   end
-
-  def execute(rule), do: H.checksum(rule)
 
   def execute(rule, :cnpj_eighth) do
     rule

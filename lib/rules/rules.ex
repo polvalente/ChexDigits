@@ -4,23 +4,51 @@ defmodule ChexDigits.Rules do
   """
   alias __MODULE__
 
-  def check_digit(digits, :cnpj), do: do_check_digit(digits, Rules.CNPJ)
-  def check_digit(digits, :cpf), do: do_check_digit(digits, Rules.CPF)
-  def check_digit(digits, :credit_card), do: do_check_digit(digits, Rules.CreditCard)
+  @banks [
+    :banco_do_brasil,
+    :banrisul,
+    :bradesco,
+    :caixa_economica,
+    :citibank,
+    :hsbc,
+    :itau,
+    :real,
+    :santander
+  ]
+  @tax_ids [:cpf, :cnpj]
 
-  def check_digit(digits, :banco_do_brasil),
-    do: do_check_digit(digits, Rules.BankAccounts.BancoDoBrasil)
+  def check_digit(digits, type) when type in @tax_ids do
+    module =
+      type
+      |> Atom.to_string()
+      |> String.upcase()
 
-  def check_digit(digits, :banrisul), do: do_check_digit(digits, Rules.BankAccounts.Banrisul)
-  def check_digit(digits, :bradesco), do: do_check_digit(digits, Rules.BankAccounts.Bradesco)
-  def check_digit(digits, :caixa), do: do_check_digit(digits, Rules.BankAccounts.CaixaEconomica)
-  def check_digit(digits, :citibank), do: do_check_digit(digits, Rules.BankAccounts.Citibank)
-  def check_digit(digits, :hsbc), do: do_check_digit(digits, Rules.BankAccounts.HSBC)
-  def check_digit(digits, :itau), do: do_check_digit(digits, Rules.BankAccounts.Itau)
-  def check_digit(digits, :real), do: do_check_digit(digits, Rules.BankAccounts.Real)
-  def check_digit(digits, :santander), do: do_check_digit(digits, Rules.BankAccounts.Santander)
+    module = Module.concat(__MODULE__, module)
 
-  defp do_check_digit(digits, Rules.CNPJ = module), do: module.check_digits(digits)
-  defp do_check_digit(digits, Rules.CPF = module), do: module.check_digits(digits)
-  defp do_check_digit(digits, module), do: module.check_digit(digits)
+    digits
+    |> module.rule()
+    |> module.execute()
+  end
+
+  def check_digit(agency, account, :hsbc),
+    do: do_check_digit_bank(agency, account, __MODULE__.BankAccounts.HSBC)
+
+  def check_digit(agency, account, bank) when bank in @banks do
+    module =
+      Module.concat(
+        __MODULE__.BankAccounts,
+        Macro.camelize(to_string(bank))
+      )
+
+    do_check_digit_bank(agency, account, module)
+  end
+
+  defp do_check_digit_bank(agency, account, module) do
+    account = String.replace(account, ~r/\D.*/, "")
+    agency = String.replace(agency, ~r/\D.*/, "")
+
+    account
+    |> module.rule(agency)
+    |> module.execute()
+  end
 end

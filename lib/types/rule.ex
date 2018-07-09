@@ -1,6 +1,7 @@
 defmodule ChexDigits.Types.Rule do
   @moduledoc """
   `%Rule{
+    for: Module,
     length: non_neg_integer,
     padding: :left | :right,
     digits: List.t(),
@@ -44,17 +45,12 @@ defmodule ChexDigits.Types.Rule do
   alias ChexDigits.Types, as: CDT
 
   defstruct(
-    # non_neg_integer
     length: CDT.Integer.NonNegative,
     padding: CDT.Padding,
-    # list
     digits: CDT.List,
-    # integer or nil
     module: CDT.Integer.Optional,
-    # list
     weights: CDT.Weights,
     replacements: CDT.Replacements,
-    # integer or nil
     weighted_sum_module: CDT.Integer.Optional
   )
 
