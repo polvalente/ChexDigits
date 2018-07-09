@@ -8,7 +8,7 @@ defmodule ChexDigits.Types.Rule do
     module: integer | nil,
     weights: List.t(),
     replacements: Map.t(),
-    weighted_sum_module: integer | nil
+    weighted_sum_term_function: integer | nil
   }`
 
   `length`: the expected length for `digits`
@@ -35,8 +35,8 @@ defmodule ChexDigits.Types.Rule do
       "after" => %{4 => "Y"}
     }
 
-  `weighted_sum_module`:
-    An optional argument that specifies if each step of the weighted sum will suffer a remainder operation. Behaves the same as `module`
+  `weighted_sum_term_function`:
+    An optional argument that specifies if each step of the weighted sum will suffer an operation. The operation will be the given function.
   """
 
   use ChexDigits.Types
@@ -51,7 +51,7 @@ defmodule ChexDigits.Types.Rule do
     module: CDT.Integer.Optional,
     weights: CDT.Weights,
     replacements: CDT.Replacements,
-    weighted_sum_module: CDT.Integer.Optional
+    weighted_sum_term_function: CDT.Function
   )
 
   def default do
@@ -82,7 +82,7 @@ defmodule ChexDigits.Types.Rule do
         module,
         weights,
         replacements \\ %{before: %{}, after: %{}},
-        weighted_sum_module \\ nil
+        weighted_sum_term_function \\ & &1
       ) do
     with digits <- H.to_list(digits),
          weights <- H.to_list(weights) do
@@ -93,7 +93,7 @@ defmodule ChexDigits.Types.Rule do
         module: module,
         weights: weights,
         replacements: replacements,
-        weighted_sum_module: weighted_sum_module
+        weighted_sum_term_function: weighted_sum_term_function
       }
 
       case validate(rule) do

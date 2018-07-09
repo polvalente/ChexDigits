@@ -6,7 +6,7 @@ defmodule ChexDigits.Rules.BankAccounts.CaixaEconomica do
 
   def rule(account, agency) do
     Rule.new(
-      H.to_list(agency) ++ H.to_list(account),
+      H.to_list(agency) ++ H.pad(H.to_list(account), 11, :left),
       15,
       :left,
       -11,

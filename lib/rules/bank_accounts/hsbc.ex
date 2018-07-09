@@ -5,7 +5,7 @@ defmodule ChexDigits.Rules.BankAccounts.HSBC do
 
   def rule(account, agency) do
     Rule.new(
-      H.to_list(agency) ++ H.to_list(account),
+      H.to_list(agency) ++ H.pad(H.to_list(account), 6, :left),
       10,
       :left,
       11,

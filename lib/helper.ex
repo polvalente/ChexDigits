@@ -8,7 +8,7 @@ defmodule ChexDigits.Helper do
   """
 
   @doc """
-  `checksum(digits, module, weights, replacements, weighted_sum_module)`
+  `checksum(digits, module, weights, replacements, weighted_sum_term_function)`
 
   `digits`: a List of digits for which the checksum will be calculated
 
@@ -32,8 +32,8 @@ defmodule ChexDigits.Helper do
       "after" => %{4 => "Y"}
     }
 
-  `weighted_sum_module`:
-    An optional argument that specifies if each step of the weighted sum will suffer a remainder operation. Behaves the same as `module`
+  `weighted_sum_term_function`:
+    An optional argument that specifies if each step of the weighted sum will suffer an operation. The operation will be the given function.
   """
 
   @spec checksum(%ChexDigits.Types.Rule{}) :: any()
@@ -42,7 +42,7 @@ defmodule ChexDigits.Helper do
         module: module,
         weights: weights,
         replacements: replacements,
-        weighted_sum_module: weighted_sum_module,
+        weighted_sum_term_function: weighted_sum_term_function,
         padding: padding,
         length: length
       }),
@@ -54,7 +54,7 @@ defmodule ChexDigits.Helper do
           length,
           weights,
           replacements,
-          weighted_sum_module
+          weighted_sum_term_function
         )
 
   @spec checksum(List.t(), integer | nil, List.t(), Map.t(), integer | nil) :: any()
@@ -65,11 +65,11 @@ defmodule ChexDigits.Helper do
         length,
         weights \\ 1,
         replacements \\ %{},
-        weighted_sum_module \\ nil
+        weighted_sum_term_function \\ & &1
       ) do
     digits
     |> pad(length, padding)
-    |> dot(weights, weighted_sum_module)
+    |> dot(weights, weighted_sum_term_function)
     |> mod(module, replacements)
   end
 
@@ -111,17 +111,17 @@ defmodule ChexDigits.Helper do
     end
   end
 
-  def dot(u, v, module) when is_list(u) and is_list(v) do
+  def dot(u, v, function) when is_list(u) and is_list(v) do
     [u, v]
     |> List.zip()
     |> Enum.reduce(0, fn {a, b}, acc ->
-      acc + my_rem(a * b, module)
+      acc + function.(a * b)
     end)
   end
 
-  def dot(u, v, module) when is_number(u) and is_list(v), do: Enum.map(v, &my_rem(&1 * u, module))
+  def dot(u, v, function) when is_number(u) and is_list(v), do: Enum.map(v, &function.(&1 * u))
 
-  def dot(u, v, module) when is_number(v) and is_list(u), do: Enum.map(u, &my_rem(&1 * v, module))
+  def dot(u, v, function) when is_number(v) and is_list(u), do: Enum.map(u, &function.(&1 * v))
 
   def two_one(length) do
     1..length

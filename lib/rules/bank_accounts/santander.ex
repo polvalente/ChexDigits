@@ -5,7 +5,7 @@ defmodule ChexDigits.Rules.BankAccounts.Santander do
 
   def rule(account, agency) do
     Rule.new(
-      H.to_list(agency) ++ [0, 0] ++ H.to_list(account),
+      H.to_list(agency) ++ H.pad(H.to_list(account), 10, :left),
       14,
       :left,
       -10,
