@@ -52,8 +52,8 @@ defmodule ChexDigits.Helper do
     digits
     |> map_onto(input_alphabet)
     |> dot(weights, per_term_function, weight_alignment)
-
-    # |> mod(module, replacements)
+    |> mod(module, module_type)
+    |> map_onto(output_alphabet)
   end
 
   @doc """
@@ -109,6 +109,28 @@ defmodule ChexDigits.Helper do
         digit
       end
     end)
+  end
+
+  # MOD
+
+  @doc """
+  Perfoms the module/remainder calculation as such:
+  If `module_type` == `:standard`:
+    `rem(value, module)`
+  If `module_type` == `:module_minus`:
+    `module - rem(value, module)`
+
+  If `module` == `nil`, then the value is returned untouched
+  """
+  @spec mod(integer, integer | nil, atom) :: integer
+  def mod(value, nil, _), do: value
+
+  def mod(value, module, :standard) do
+    rem(value, module)
+  end
+
+  def mod(value, module, :module_minus) do
+    module - rem(value, module)
   end
 
   # TO LIST

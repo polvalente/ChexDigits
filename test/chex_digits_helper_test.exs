@@ -4,6 +4,7 @@ defmodule ChexDigits.HelperTest do
   as it is thoroughly tested via the Rule tests.
   """
   use ExUnit.Case, async: true
+  use ExUnitProperties
 
   import ChexDigits.Helper
 
@@ -38,5 +39,15 @@ defmodule ChexDigits.HelperTest do
 
   test "`map_onto/2`" do
     assert [1, 2, 3, 4, 5] = map_onto([1, "B", 3, 4, "E"], %{"B" => 2, "E" => 5})
+  end
+
+  property "`mod/3`" do
+    check all value <- StreamData.positive_integer(),
+              module <- StreamData.positive_integer() do
+      assert value == mod(value, nil, :standard)
+      assert value == mod(value, nil, :module_minus)
+      assert rem(value, module) == mod(value, module, :standard)
+      assert module - rem(value, module) == mod(value, module, :module_minus)
+    end
   end
 end
