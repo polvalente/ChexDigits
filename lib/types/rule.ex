@@ -21,7 +21,8 @@ defmodule ChexDigits.Types.Rule do
     - `:module_minus`: the checksum module will be: `module - rem(sum, module)`
 
   `weights`:
-    The list of weights to be used when calculating the checksum. Can also be a number.
+    The enumerable that contains the weights to be used when calculating the checksum.
+    Can also be a number.
 
   For `input_alphabet` and `output_alphabet`, if the digit is not specified, itself is returned
   `input_alphabet`:
@@ -77,7 +78,6 @@ defmodule ChexDigits.Types.Rule do
          weights <- H.to_list(weights) do
       %__MODULE__{
         digits: digits,
-        length: length,
         input_alphabet: input_alphabet,
         output_alphabet: output_alphabet,
         module: module,
