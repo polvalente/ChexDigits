@@ -1,129 +1,91 @@
 defmodule ChexDigits.Types.Rule do
   @moduledoc """
   `%Rule{
-    for: Module,
-    length: non_neg_integer,
-    padding: :left | :right,
-    digits: List.t(),
+    digits: list,
+    input_alphabet: list,
+    output_alphabet: list,
     module: integer | nil,
-    weights: List.t(),
-    replacements: Map.t(),
-    weighted_sum_term_function: integer | nil
+    module_type: atom,
+    weights: list | non_neg_integer,
+    weight_alignment: atom,
+    per_term_function: function
   }`
 
-  `length`: the expected length for `digits`
-  `padding`: if length(`digits`) < `length`, `digits` will be
-            zero-padded from the left or from the right, according to this parameter
   `digits`: a List of digits for which the checksum will be calculated
 
   `module`: the module to calculate the final remainder.
     If `nil`, the number will be returned untouched
-    If negative, the remainder will be: `abs(module) - rem(number, abs(module))`
+
+  `module_type`: one of:
+    - `:standard`: the checksum module will be: `rem(sum, module)`
+    - `:module_minus`: the checksum module will be: `module - rem(sum, module)`
 
   `weights`:
-    An optional argument to perform a weighted sum on the digits
+    The list of weights to be used when calculating the checksum. Can also be a number.
 
-  `replacements`:
-    An optional argument to specify a translation table (e.g. if the final result is 5, replace with "X").
-    There should be a "before" and an "after" fields, each of which
-    specify when the replacement will be applied -- before or after the `module - rem(digit, module)` calculation
+  For `input_alphabet` and `output_alphabet`, if the digit is not specified, itself is returned
+  `input_alphabet`:
+    A map that translates the `digits` list into a numerical representation
+    e.g.: %{"0" => 0, "1" => 1, "X" => 10}
+  `output_alphabet`:
+    A map that translates the calculated check digit into a string representation:
+    e.g.:
+      check_digit = 11 - rem(1 * 7 + 2 * 6 + 3 * 5, 11)
+      # Here, check_digit == 10. However, it we need the results to conform to a single character.
+      # Therefore, we use the folowing output_alphabet, which maps every digit 0 - 9 onto its character
+      # and the number `10` is mapped onto the character `"X"`.
+      output_alphabet = %{10 => "X"}
 
-    The `Helper.replacements/2` function build this map from two separate maps, for ease of use
-
-    Example: %{
-      "before" => %{0 => "X"},
-      "after" => %{4 => "Y"}
-    }
-
-  `weighted_sum_term_function`:
-    An optional argument that specifies if each step of the weighted sum will suffer an operation. The operation will be the given function.
+  `per_term_function`:
+    An optional argument that specifies the function to be applied to the result of each multiplication in the weighted sum.
   """
 
-  use ChexDigits.Types
-
   alias ChexDigits.Helper, as: H
-  alias ChexDigits.Types, as: CDT
 
-  defstruct(
-    length: CDT.Integer.NonNegative,
-    padding: CDT.Padding,
-    digits: CDT.List,
-    module: CDT.Integer.Optional,
-    weights: CDT.Weights,
-    replacements: CDT.Replacements,
-    weighted_sum_term_function: CDT.Function
-  )
-
-  def default do
-    %__MODULE__{}
-    |> Map.delete(:__struct__)
-    |> Map.keys()
-    |> Enum.reduce([], fn key, acc ->
-      acc ++ [{key, Map.get(%__MODULE__{}, key).default()}]
-    end)
-    |> Enum.reduce(%__MODULE__{}, fn {key, value}, acc ->
-      Map.put(acc, key, value)
-    end)
-  end
+  defstruct [
+    :digits,
+    :input_alphabet,
+    :output_alphabet,
+    :module,
+    :module_type,
+    :weights,
+    :weight_alignment,
+    :per_term_function
+  ]
 
   @spec new(
+          List.t() | String.t(),
+          Map.t(),
+          Map.t(),
           non_neg_integer,
           atom,
-          List.t() | String.t(),
-          integer,
-          List.t() | String.t() | number,
-          Map.t(),
-          integer
+          List.t() | non_neg_integer,
+          atom,
+          function
         ) :: %__MODULE__{}
   def new(
         digits,
-        length,
-        padding,
+        input_alphabet,
+        output_alphabet,
         module,
+        module_type,
         weights,
-        replacements \\ %{before: %{}, after: %{}},
-        weighted_sum_term_function \\ & &1
+        weight_alignment \\ :right,
+        per_term_function \\ & &1
       ) do
     with digits <- H.to_list(digits),
          weights <- H.to_list(weights) do
-      rule = %__MODULE__{
+      %__MODULE__{
         digits: digits,
         length: length,
-        padding: padding,
+        input_alphabet: input_alphabet,
+        output_alphabet: output_alphabet,
         module: module,
+        module_type: module_type,
         weights: weights,
-        replacements: replacements,
-        weighted_sum_term_function: weighted_sum_term_function
+        weight_alignment: weight_alignment,
+        per_term_function: per_term_function
       }
-
-      case validate(rule) do
-        :ok -> rule
-        errors -> {:error, errors}
-      end
     end
-  end
-
-  def validate(rule) do
-    %__MODULE__{}
-    |> Map.delete(:__struct__)
-    |> Map.keys()
-    |> Enum.map(fn key ->
-      {
-        key,
-        Map.get(%__MODULE__{}, key).validate(Map.get(rule, key))
-      }
-    end)
-    |> Enum.filter(&Kernel.match?({field, {:error, reason}}, &1))
-    |> case do
-      [] -> :ok
-      errors -> flatten_errors(errors)
-    end
-  end
-
-  defp flatten_errors(errors) do
-    {
-      :error,
-      Enum.map(errors, fn {field, {:error, err}} -> {field, List.wrap(err)} end)
-    }
   end
 end
