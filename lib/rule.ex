@@ -1,4 +1,4 @@
-defmodule ChexDigits.Types.Rule do
+defmodule ChexDigits.Rule do
   @moduledoc """
   `%Rule{
     digits: list,

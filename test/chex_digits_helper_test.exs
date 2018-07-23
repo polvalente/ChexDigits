@@ -8,10 +8,8 @@ defmodule ChexDigits.HelperTest do
 
   import ChexDigits.Helper
 
-  @moduletag :focus
-
   test "`to_list/1`" do
-    assert [1, 2, 3, 4] = to_list("1234")
+    assert ["1", "2", "3", "4"] = to_list("1234")
     assert [1, 2, 3, 4] = to_list([1, 2, 3, 4])
     assert {:error, _} = to_list(1)
   end

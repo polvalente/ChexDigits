@@ -36,7 +36,7 @@ defmodule ChexDigits.Helper do
     An optional argument that specifies if each step of the weighted sum will suffer an operation. The operation will be the given function.
   """
 
-  alias ChexDigits.Types.Rule
+  alias ChexDigits.Rule
 
   @spec checksum(%Rule{}) :: integer | String.t()
   def checksum(%Rule{
@@ -51,9 +51,12 @@ defmodule ChexDigits.Helper do
       }) do
     digits
     |> map_onto(input_alphabet)
+    |> Enum.map(&String.to_integer/1)
     |> dot(weights, per_term_function, weight_alignment)
     |> mod(module, module_type)
     |> map_onto(output_alphabet)
+    |> Enum.at(0)
+    |> Integer.to_string()
   end
 
   @doc """
@@ -71,23 +74,20 @@ defmodule ChexDigits.Helper do
   `alignment = :left`\n
 
   For each multiplication term, the function `fun/1` is applied afterwards.
-  It is assumed that length(u) >= length(v)
   """
 
   # DOT
   def dot(u, v, fun, alignment) do
-    direction =
-      case alignment do
-        :left ->
-          1
+    alignment
+    |> case do
+      :left ->
+        Enum.zip(u, v)
 
-        :right ->
-          -1
-      end
-
-    u
-    |> Enum.take(direction * length(v))
-    |> Enum.zip(v)
+      :right ->
+        u
+        |> Enum.reverse()
+        |> Enum.zip(Enum.reverse(v))
+    end
     |> Enum.reduce(0, fn {x, y}, acc ->
       fun.(x * y) + acc
     end)
@@ -102,6 +102,7 @@ defmodule ChexDigits.Helper do
   @spec map_onto(list, Map.t()) :: list
   def map_onto(digits, alphabet) do
     digits
+    |> List.wrap()
     |> Enum.map(fn digit ->
       if Map.has_key?(alphabet, digit) do
         Map.get(alphabet, digit)
@@ -136,9 +137,7 @@ defmodule ChexDigits.Helper do
   # TO LIST
   def to_list(l) when is_binary(l) do
     l
-    |> String.split("", trim: true)
-    |> Enum.filter(fn digit -> Regex.match?(~r/[0-9]/, digit) end)
-    |> Enum.map(&String.to_integer/1)
+    |> String.codepoints()
   end
 
   def to_list(l) when is_list(l), do: l
