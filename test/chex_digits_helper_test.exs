@@ -48,4 +48,14 @@ defmodule ChexDigits.HelperTest do
       assert module - rem(value, module) == mod(value, module, :module_minus)
     end
   end
+
+  property "`to_integer/1`" do
+    check all value <- StreamData.member_of(String.codepoints("0123456789")) do
+      assert String.to_integer(value) == to_integer(value)
+    end
+
+    check all value <- StreamData.integer() do
+      assert value == to_integer(value)
+    end
+  end
 end

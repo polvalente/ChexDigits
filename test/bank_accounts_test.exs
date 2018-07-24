@@ -39,7 +39,6 @@ defmodule ChexDigits.BankAccountsTest do
     end
   end
 
-  @tag :focus
   property "Santander bank account validation" do
     check all data <- generate("santander") do
       assert ChexDigits.check_digit(data["agency"], data["account"], :santander)

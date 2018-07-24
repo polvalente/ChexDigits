@@ -51,7 +51,7 @@ defmodule ChexDigits.Helper do
       }) do
     digits
     |> map_onto(input_alphabet)
-    |> Enum.map(&String.to_integer/1)
+    |> Enum.map(&to_integer/1)
     |> dot(weights, per_term_function, weight_alignment)
     |> mod(module, module_type)
     |> map_onto(output_alphabet)
@@ -161,6 +161,10 @@ defmodule ChexDigits.Helper do
       end
     end
   end
+
+  # TO INTEGER
+  def to_integer(x) when is_integer(x), do: x
+  def to_integer(x) when is_binary(x), do: String.to_integer(x)
 
   # TO LIST
   def to_list(l) when is_binary(l) do
