@@ -34,12 +34,12 @@ defmodule ChexDigits do
   end
 
   def check_digit(agency, account, :hsbc),
-    do: do_check_digit_bank(agency, account, __MODULE__.BankAccounts.HSBC)
+    do: do_check_digit_bank(agency, account, __MODULE__.Rules.BankAccounts.HSBC)
 
   def check_digit(agency, account, bank) when bank in @banks do
     module =
       Module.concat(
-        __MODULE__.BankAccounts,
+        __MODULE__.Rules.BankAccounts,
         Macro.camelize(to_string(bank))
       )
 

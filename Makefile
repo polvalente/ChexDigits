@@ -10,3 +10,5 @@ precommit:
 
 test:
 	@mix test --trace
+test.focus:
+	@mix test --only focus

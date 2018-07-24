@@ -134,6 +134,34 @@ defmodule ChexDigits.Helper do
     module - rem(value, module)
   end
 
+  # PAD
+  @doc """
+  Zero-padding to comply to length
+  The third argument defines if the padding occurs from the `:left` or from the `:right`.
+  When `len <= length(digits)`, `digits` is returned untouched
+  """
+  @spec pad(list, non_neg_integer, atom) :: list
+  def pad(digits, len, direction) do
+    if len <= length(digits) do
+      digits
+    else
+      padding_length = len - length(digits)
+
+      padding =
+        [0]
+        |> Stream.cycle()
+        |> Enum.take(padding_length)
+
+      case direction do
+        :right ->
+          digits ++ padding
+
+        :left ->
+          padding ++ digits
+      end
+    end
+  end
+
   # TO LIST
   def to_list(l) when is_binary(l) do
     l
