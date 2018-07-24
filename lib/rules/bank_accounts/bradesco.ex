@@ -1,6 +1,6 @@
 defmodule ChexDigits.Rules.BankAccounts.Bradesco do
   @moduledoc false
-  # alias ChexDigits.Types.Rule
+  # alias ChexDigits.Rule
   # import ChexDigits.Helper, only: [replacements: 2, checksum: 1]
   # import Enum, only: [to_list: 1]
 

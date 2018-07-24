@@ -1,6 +1,6 @@
 defmodule ChexDigits.Rules.BankAccounts.Santander do
   @moduledoc false
-  # alias ChexDigits.Types.Rule
+  # alias ChexDigits.Rule
   # alias ChexDigits.Helper, as: H
 
   # def rule(account, agency) do

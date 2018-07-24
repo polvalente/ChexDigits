@@ -1,6 +1,6 @@
 defmodule ChexDigits.Rules.BankAccounts.BancoDoBrasil do
   @moduledoc false
-  alias ChexDigits.Types.Rule
+  alias ChexDigits.Rule
   alias ChexDigits.Helper, as: H
   import Enum, only: [to_list: 1]
 
