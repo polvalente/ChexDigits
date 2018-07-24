@@ -9,13 +9,13 @@ defmodule ChexDigits.BankAccountsTest do
     StreamData.member_of(data)
   end
 
-  @tag :focus
   property "Itau bank account validation" do
     check all data <- generate("itau") do
       assert ChexDigits.check_digit(data["agency"], data["account"], :itau)
     end
   end
 
+  @tag :focus
   property "Banco do Brasil bank account validation" do
     check all data <- generate("banco_do_brasil") do
       assert ChexDigits.check_digit(data["agency"], data["account"], :banco_do_brasil)
